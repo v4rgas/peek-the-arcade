@@ -146,8 +146,8 @@ h1 {
 .btn-play {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(45deg, #ff00ff, #00ffff);
-    color: #0f0f23;
+    background: #ff00ff;
+    color: #fff;
     border: 3px solid #00ffff;
     font-size: 0.7em;
     font-family: 'Press Start 2P', cursive;
@@ -158,7 +158,9 @@ h1 {
 }
 
 .btn-play:hover {
-    background: linear-gradient(45deg, #00ffff, #ff00ff);
+    background: #00ffff;
+    color: #0f0f23;
+    border-color: #ff00ff;
     box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
     transform: scale(1.05);
 }
@@ -194,7 +196,7 @@ h1 {
 }
 
 .btn-close {
-    background: linear-gradient(45deg, #ff0066, #ff00ff);
+    background: #ff0066;
     color: #fff;
     border: 3px solid #ff00ff;
     padding: 12px 25px;
@@ -206,7 +208,7 @@ h1 {
 }
 
 .btn-close:hover {
-    background: linear-gradient(45deg, #ff00ff, #ff0066);
+    background: #ff00ff;
     box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
     transform: scale(1.05);
 }

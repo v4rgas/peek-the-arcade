@@ -53,7 +53,7 @@ function createForkCard(fork) {
             </div>
         </div>
         <button class="btn-play" data-owner="${fork.owner.login}" data-repo="${fork.name}">
-            🎮 Play Game
+            ▶ Play Game
         </button>
     `;
 
