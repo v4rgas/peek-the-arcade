@@ -1,7 +1,6 @@
 const REPO_OWNER = 'platanus-hack';
 const REPO_NAME = 'platanus-hack-25-arcade';
 const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/forks`;
-const ORIGINAL_GAME_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/game.js`;
 
 // DOM elements
 const loadingEl = document.getElementById('loading');
@@ -11,94 +10,27 @@ const gameContainerEl = document.getElementById('game-container');
 const gameIframeEl = document.getElementById('game-iframe');
 const currentGameTitleEl = document.getElementById('current-game-title');
 const closeGameBtn = document.getElementById('close-game');
-const hideUnchangedToggle = document.getElementById('hide-unchanged');
 
-// Store all forks data
-let allForksData = [];
-
-// Fetch forks from GitHub GraphQL API with commit counts
-async function fetchForksWithCommits() {
+// Fetch forks from GitHub REST API
+async function fetchForks() {
     try {
         let allForks = [];
-        let hasNextPage = true;
-        let afterCursor = null;
+        let page = 1;
+        let hasMore = true;
 
-        while (hasNextPage) {
-            const query = `
-                query {
-                    repository(owner: "${REPO_OWNER}", name: "${REPO_NAME}") {
-                        forks(first: 100${afterCursor ? `, after: "${afterCursor}"` : ''}) {
-                            pageInfo {
-                                hasNextPage
-                                endCursor
-                            }
-                            nodes {
-                                owner {
-                                    login
-                                    avatarUrl
-                                }
-                                name
-                                url
-                                defaultBranchRef {
-                                    target {
-                                        ... on Commit {
-                                            history {
-                                                totalCount
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        defaultBranchRef {
-                            target {
-                                ... on Commit {
-                                    history {
-                                        totalCount
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const response = await fetch('https://api.github.com/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ query })
-            });
-
+        while (hasMore) {
+            const response = await fetch(`${API_URL}?per_page=100&page=${page}`);
             if (!response.ok) {
-                throw new Error(`GitHub GraphQL API error: ${response.status}`);
+                throw new Error(`GitHub API error: ${response.status}`);
             }
+            const forks = await response.json();
 
-            const result = await response.json();
-
-            if (result.errors) {
-                throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
+            if (forks.length === 0) {
+                hasMore = false;
+            } else {
+                allForks = allForks.concat(forks);
+                page++;
             }
-
-            const originalCommitCount = result.data.repository.defaultBranchRef?.target?.history?.totalCount || 0;
-            const forks = result.data.repository.forks.nodes;
-
-            // Add hasCommits flag based on commit count comparison
-            const forksWithStatus = forks.map(fork => ({
-                owner: {
-                    login: fork.owner.login,
-                    avatar_url: fork.owner.avatarUrl
-                },
-                name: fork.name,
-                html_url: fork.url,
-                hasCommits: (fork.defaultBranchRef?.target?.history?.totalCount || 0) > originalCommitCount
-            }));
-
-            allForks = allForks.concat(forksWithStatus);
-
-            hasNextPage = result.data.repository.forks.pageInfo.hasNextPage;
-            afterCursor = result.data.repository.forks.pageInfo.endCursor;
         }
 
         return allForks;
@@ -200,57 +132,26 @@ closeGameBtn.addEventListener('click', () => {
 });
 
 
-// Render forks based on filter
-function renderForks() {
-    forksListEl.innerHTML = '';
-    const hideUnchanged = hideUnchangedToggle.checked;
-
-    let displayedCount = 0;
-    for (const forkData of allForksData) {
-        if (hideUnchanged && !forkData.hasCommits) {
-            continue; // Skip unchanged forks if filter is enabled
-        }
-        const card = createForkCard(forkData.fork);
-        forksListEl.appendChild(card);
-        displayedCount++;
-    }
-
-    if (displayedCount === 0) {
-        errorEl.textContent = hideUnchanged
-            ? 'No forks with changes found yet!'
-            : 'No forks found yet!';
-        errorEl.style.display = 'block';
-    } else {
-        errorEl.style.display = 'none';
-    }
-}
-
-// Toggle event listener
-hideUnchangedToggle.addEventListener('change', renderForks);
-
 // Initialize app
 async function init() {
     try {
         loadingEl.style.display = 'block';
         errorEl.style.display = 'none';
 
-        const forks = await fetchForksWithCommits();
+        const forks = await fetchForks();
+
+        loadingEl.style.display = 'none';
 
         if (forks.length === 0) {
-            loadingEl.style.display = 'none';
             errorEl.textContent = 'No forks found yet!';
             errorEl.style.display = 'block';
             return;
         }
 
-        // Store forks with their hasCommits status
-        allForksData = forks.map(fork => ({
-            fork: fork,
-            hasCommits: fork.hasCommits
-        }));
-
-        loadingEl.style.display = 'none';
-        renderForks();
+        forks.forEach(fork => {
+            const card = createForkCard(fork);
+            forksListEl.appendChild(card);
+        });
 
     } catch (error) {
         loadingEl.style.display = 'none';
