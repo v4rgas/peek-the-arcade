@@ -11,29 +11,15 @@ const gameIframeEl = document.getElementById('game-iframe');
 const currentGameTitleEl = document.getElementById('current-game-title');
 const closeGameBtn = document.getElementById('close-game');
 
-// Fetch forks from GitHub REST API
+// Fetch forks from GitHub REST API (single request)
 async function fetchForks() {
     try {
-        let allForks = [];
-        let page = 1;
-        let hasMore = true;
-
-        while (hasMore) {
-            const response = await fetch(`${API_URL}?per_page=100&page=${page}`);
-            if (!response.ok) {
-                throw new Error(`GitHub API error: ${response.status}`);
-            }
-            const forks = await response.json();
-
-            if (forks.length === 0) {
-                hasMore = false;
-            } else {
-                allForks = allForks.concat(forks);
-                page++;
-            }
+        const response = await fetch(`${API_URL}?per_page=100`);
+        if (!response.ok) {
+            throw new Error(`GitHub API error: ${response.status}`);
         }
-
-        return allForks;
+        const forks = await response.json();
+        return forks;
     } catch (error) {
         throw new Error(`Failed to fetch forks: ${error.message}`);
     }
