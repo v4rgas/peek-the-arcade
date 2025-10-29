@@ -1,0 +1,14 @@
+{
+  "name": "peep-the-arcade",
+  "version": "1.0.0",
+  "description": "Peep the Arcade - Test games from platanus-hack-25-arcade forks",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

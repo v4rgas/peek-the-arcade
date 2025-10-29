@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peep the Arcade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🕹️ Peep the Arcade</h1>
+        <p class="subtitle">Test games from platanus-hack-25-arcade forks</p>
+
+        <div class="filter-controls">
+            <label class="toggle-label">
+                <input type="checkbox" id="hide-unchanged" checked>
+                <span>Hide unchanged games</span>
+            </label>
+        </div>
+
+        <div id="loading" class="loading">Loading forks...</div>
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div id="forks-list" class="forks-list"></div>
+
+        <div id="game-container" class="game-container" style="display: none;">
+            <div class="game-header">
+                <h2 id="current-game-title"></h2>
+                <button id="close-game" class="btn-close">✕ Close</button>
+            </div>
+            <iframe id="game-iframe" sandbox="allow-scripts"></iframe>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
