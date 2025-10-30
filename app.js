@@ -39,9 +39,45 @@ saveTokenBtn.addEventListener('click', () => {
 // Store all forks globally
 let allForks = [];
 
+// Cache configuration
+const CACHE_KEY = 'forks_cache';
+const CACHE_TIMESTAMP_KEY = 'forks_cache_timestamp';
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+// Check if cache is valid
+function isCacheValid() {
+    const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+    if (!timestamp) return false;
+
+    const cacheAge = Date.now() - parseInt(timestamp, 10);
+    return cacheAge < CACHE_DURATION;
+}
+
+// Get forks from cache
+function getCachedForks() {
+    const cached = localStorage.getItem(CACHE_KEY);
+    return cached ? JSON.parse(cached) : null;
+}
+
+// Save forks to cache
+function cacheForks(forks) {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(forks));
+    localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+}
+
 // Fetch forks from GitHub REST API
 async function fetchForks() {
     try {
+        // Check cache first
+        if (isCacheValid()) {
+            const cached = getCachedForks();
+            if (cached) {
+                console.log('Using cached forks data');
+                return cached;
+            }
+        }
+
+        console.log('Fetching fresh forks data from GitHub API');
         const headers = {};
         if (githubToken) {
             headers['Authorization'] = `token ${githubToken}`;
@@ -52,6 +88,10 @@ async function fetchForks() {
             throw new Error(`GitHub API error: ${response.status}`);
         }
         const forks = await response.json();
+
+        // Cache the results
+        cacheForks(forks);
+
         return forks;
     } catch (error) {
         throw new Error(`Failed to fetch forks: ${error.message}`);
