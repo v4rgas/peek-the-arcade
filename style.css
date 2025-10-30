@@ -124,28 +124,12 @@ h1 {
     position: relative;
 }
 
-.fork-card::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
 .fork-card:hover {
     transform: translateY(-8px);
     box-shadow:
-        0 0 40px rgba(255, 0, 255, 0.6),
-        inset 0 0 30px rgba(255, 0, 255, 0.1);
-}
-
-.fork-card:hover::before {
-    opacity: 1;
+        0 0 40px rgba(0, 255, 255, 0.6),
+        inset 0 0 30px rgba(0, 255, 255, 0.1);
+    border-color: #ff00ff;
 }
 
 .fork-header {
@@ -173,13 +157,22 @@ h1 {
 .fork-info a {
     color: #00ffff;
     text-decoration: none;
-    font-size: 0.5em;
+    font-size: 0.65em;
     text-shadow: 0 0 5px #00ffff;
+    padding: 8px 12px;
+    border: 2px solid #00ffff;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 8px;
+    transition: all 0.3s;
 }
 
 .fork-info a:hover {
-    color: #ff00ff;
-    text-shadow: 0 0 10px #ff00ff;
+    color: #0f0f23;
+    background: #00ffff;
+    text-shadow: none;
+    border-color: #00ffff;
+    transform: scale(1.05);
 }
 
 .btn-play {
