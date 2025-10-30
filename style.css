@@ -257,3 +257,55 @@ h1 {
         inset 0 0 40px rgba(0, 255, 255, 0.1);
     background: #000;
 }
+
+.footer {
+    text-align: center;
+    margin-top: 60px;
+    padding: 40px 20px;
+    border-top: 2px solid rgba(0, 255, 255, 0.3);
+}
+
+.made-with-love {
+    color: #ff00ff;
+    font-size: 0.65em;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+.made-with-love a {
+    color: #00ffff;
+    text-decoration: none;
+    text-shadow: 0 0 5px #00ffff;
+    transition: all 0.3s;
+}
+
+.made-with-love a:hover {
+    color: #ff00ff;
+    text-shadow: 0 0 15px #ff00ff;
+}
+
+.contribute {
+    color: #00ffff;
+    font-size: 0.6em;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+.contribute a {
+    color: #ff00ff;
+    text-decoration: none;
+    text-shadow: 0 0 10px #ff00ff;
+    padding: 8px 15px;
+    border: 2px solid #ff00ff;
+    border-radius: 4px;
+    display: inline-block;
+    margin-left: 8px;
+    transition: all 0.3s;
+}
+
+.contribute a:hover {
+    background: #ff00ff;
+    color: #0f0f23;
+    text-shadow: none;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+}
