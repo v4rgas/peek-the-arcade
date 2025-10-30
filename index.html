@@ -21,6 +21,19 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>">
 
     <link rel="stylesheet" href="style.css">
+    <script>
+        // Update Open Graph metadata if game query parameter exists
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameOwner = urlParams.get('game');
+        if (gameOwner) {
+            document.title = `Play ${gameOwner}'s Game - Peek the Arcade`;
+            document.querySelector('meta[name="description"]').setAttribute('content', `Play ${gameOwner}'s game from the platanus-hack-25-arcade`);
+            document.querySelector('meta[property="og:title"]').setAttribute('content', `Play ${gameOwner}'s Game`);
+            document.querySelector('meta[property="og:description"]').setAttribute('content', `Check out ${gameOwner}'s game from the platanus-hack-25-arcade`);
+            document.querySelector('meta[name="twitter:title"]').setAttribute('content', `Play ${gameOwner}'s Game`);
+            document.querySelector('meta[name="twitter:description"]').setAttribute('content', `Check out ${gameOwner}'s game from the platanus-hack-25-arcade`);
+        }
+    </script>
 </head>
 <body>
     <div class="container">
