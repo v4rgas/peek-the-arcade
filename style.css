@@ -212,20 +212,19 @@ h1 {
     bottom: 0;
     background: rgba(0, 0, 0, 0.95);
     z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
 }
 
 .game-header {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 90%;
     max-width: 1200px;
-    margin-bottom: 20px;
+    z-index: 1001;
 }
 
 .game-header h2 {
@@ -253,6 +252,10 @@ h1 {
 }
 
 #game-iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 800px;
     height: 600px;
     border: 5px solid #00ffff;
@@ -260,5 +263,4 @@ h1 {
         0 0 40px rgba(0, 255, 255, 0.6),
         inset 0 0 40px rgba(0, 255, 255, 0.1);
     background: #000;
-    margin: 0 auto;
 }
