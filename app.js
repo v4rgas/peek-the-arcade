@@ -168,6 +168,23 @@ function createForkCard(fork) {
     const card = document.createElement('div');
     card.className = 'fork-card';
 
+    // Format the pushed_at date
+    const pushedDate = new Date(fork.pushed_at);
+    const now = new Date();
+    const diffMs = now - pushedDate;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    let timeAgo;
+    if (diffMins < 60) {
+        timeAgo = `${diffMins}m ago`;
+    } else if (diffHours < 24) {
+        timeAgo = `${diffHours}h ago`;
+    } else {
+        timeAgo = `${diffDays}d ago`;
+    }
+
     card.innerHTML = `
         <div class="fork-header">
             <img src="${fork.owner.avatar_url}" alt="${fork.owner.login}" class="fork-avatar">
@@ -175,6 +192,10 @@ function createForkCard(fork) {
                 <h3>${fork.owner.login}</h3>
                 <a href="${fork.html_url}" target="_blank">View Fork →</a>
             </div>
+        </div>
+        <div class="fork-meta">
+            <span class="meta-item" title="${fork.stargazers_count} stars">⭐ ${fork.stargazers_count}</span>
+            <span class="meta-item" title="Last pushed ${timeAgo}">🕒 ${timeAgo}</span>
         </div>
         <button class="btn-play" data-owner="${fork.owner.login}" data-repo="${fork.name}">
             ▶ Play Game

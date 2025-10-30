@@ -203,6 +203,34 @@ h1 {
     transform: scale(1.05);
 }
 
+.fork-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.5em;
+    color: #ffff00;
+    padding: 6px 10px;
+    background: rgba(255, 255, 0, 0.1);
+    border: 1px solid rgba(255, 255, 0, 0.3);
+    border-radius: 4px;
+    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+    transition: all 0.3s;
+}
+
+.meta-item:hover {
+    background: rgba(255, 255, 0, 0.2);
+    border-color: rgba(255, 255, 0, 0.6);
+    transform: scale(1.05);
+}
+
 .btn-play {
     width: 100%;
     padding: 15px;
