@@ -1,4 +1,4 @@
-# 🕹️ Peep the Arcade
+# 🕹️ Peek the Arcade
 
 A simple frontend to list and test games from platanus-hack-25-arcade forks.
 
