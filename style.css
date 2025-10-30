@@ -305,13 +305,16 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 800px;
-    height: 600px;
+    width: 90vw;
+    height: 85vh;
+    max-width: 1200px;
+    max-height: 900px;
     border: 5px solid #00ffff;
     box-shadow:
         0 0 40px rgba(0, 255, 255, 0.6),
         inset 0 0 40px rgba(0, 255, 255, 0.1);
     background: #000;
+    overflow: hidden;
 }
 
 .footer {

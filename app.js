@@ -254,7 +254,18 @@ async function loadGame(owner, repo) {
                     body {
                         margin: 0;
                         padding: 0;
+                        overflow: hidden;
                         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 100vh;
+                        background: #000;
+                    }
+                    #game-root {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
                     }
                     #error {
                         color: #ff4757;
