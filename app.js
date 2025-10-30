@@ -45,6 +45,8 @@ let allForks = [];
 const CACHE_KEY = 'forks_cache';
 const CACHE_TIMESTAMP_KEY = 'forks_cache_timestamp';
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
+const GAME_CACHE_PREFIX = 'game_cache_'; // Prefix for game.js cache keys
+const GAME_CACHE_TIMESTAMP_PREFIX = 'game_cache_timestamp_';
 
 // Check if cache is valid
 function isCacheValid() {
@@ -65,6 +67,27 @@ function getCachedForks() {
 function cacheForks(forks) {
     localStorage.setItem(CACHE_KEY, JSON.stringify(forks));
     localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+}
+
+// Check if game cache is valid
+function isGameCacheValid(owner, repo) {
+    const timestamp = localStorage.getItem(`${GAME_CACHE_TIMESTAMP_PREFIX}${owner}_${repo}`);
+    if (!timestamp) return false;
+
+    const cacheAge = Date.now() - parseInt(timestamp, 10);
+    return cacheAge < CACHE_DURATION;
+}
+
+// Get game code from cache
+function getCachedGame(owner, repo) {
+    const cached = localStorage.getItem(`${GAME_CACHE_PREFIX}${owner}_${repo}`);
+    return cached || null;
+}
+
+// Save game code to cache
+function cacheGame(owner, repo, gameCode) {
+    localStorage.setItem(`${GAME_CACHE_PREFIX}${owner}_${repo}`, gameCode);
+    localStorage.setItem(`${GAME_CACHE_TIMESTAMP_PREFIX}${owner}_${repo}`, Date.now().toString());
 }
 
 // Fetch forks from GitHub REST API
@@ -168,16 +191,31 @@ function createForkCard(fork) {
 
 // Load and run a game
 async function loadGame(owner, repo) {
-    const gameJsUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/game.js`;
-
     currentGameTitleEl.textContent = `${owner}'s Game`;
     gameContainerEl.style.display = 'block';
 
     try {
-        // Fetch game.js from parent page (has network permissions)
-        const response = await fetch(gameJsUrl);
-        if (!response.ok) throw new Error('Failed to load game.js');
-        const gameCode = await response.text();
+        let gameCode;
+
+        // Check cache first
+        if (isGameCacheValid(owner, repo)) {
+            gameCode = getCachedGame(owner, repo);
+            if (gameCode) {
+                console.log(`Using cached game.js for ${owner}/${repo}`);
+            }
+        }
+
+        // Fetch from GitHub if not cached
+        if (!gameCode) {
+            const gameJsUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/game.js`;
+            console.log(`Fetching fresh game.js for ${owner}/${repo}`);
+            const response = await fetch(gameJsUrl);
+            if (!response.ok) throw new Error('Failed to load game.js');
+            gameCode = await response.text();
+
+            // Cache the game code
+            cacheGame(owner, repo, gameCode);
+        }
 
         // Create HTML with the game code embedded
         const gameHtml = `
