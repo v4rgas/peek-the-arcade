@@ -157,7 +157,13 @@ function displayForks(forks) {
     }
 
     errorEl.style.display = 'none';
-    forks.forEach(fork => {
+
+    // Sort forks by pushed_at date (most recent first)
+    const sortedForks = [...forks].sort((a, b) => {
+        return new Date(b.pushed_at) - new Date(a.pushed_at);
+    });
+
+    sortedForks.forEach(fork => {
         const card = createForkCard(fork);
         forksListEl.appendChild(card);
     });
