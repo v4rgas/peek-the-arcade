@@ -3,6 +3,8 @@ const REPO_NAME = 'platanus-hack-25-arcade';
 const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/forks`;
 // Last commit date from parent repo: 2025-10-28T14:51:05Z
 const PARENT_LAST_PUSH = new Date('2025-10-28T14:51:05Z');
+// Minimum time difference (1 minute) to consider a fork as having new commits
+const MIN_TIME_DIFFERENCE_MS = 60 * 1000; // 1 minute in milliseconds
 
 // DOM elements
 const loadingEl = document.getElementById('loading');
@@ -105,7 +107,19 @@ function filterForks(forks, onlyModified) {
     }
     return forks.filter(fork => {
         const forkPushDate = new Date(fork.pushed_at);
-        return forkPushDate > PARENT_LAST_PUSH;
+        const timeDifference = forkPushDate.getTime() - PARENT_LAST_PUSH.getTime();
+        const shouldShow = timeDifference >= MIN_TIME_DIFFERENCE_MS;
+
+        // Debug logging
+        console.log(`Fork: ${fork.owner.login}`);
+        console.log(`  pushed_at: ${fork.pushed_at}`);
+        console.log(`  Parsed date: ${forkPushDate.toISOString()}`);
+        console.log(`  Parent date: ${PARENT_LAST_PUSH.toISOString()}`);
+        console.log(`  Time difference: ${Math.floor(timeDifference / 1000)} seconds`);
+        console.log(`  Show: ${shouldShow}`);
+        console.log('---');
+
+        return shouldShow;
     });
 }
 
