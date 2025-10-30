@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peep the Arcade</title>
+    <title>Peek the Arcade</title>
     <meta name="description" content="Browse and play games from platanus-hack-25-arcade forks">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Peep the Arcade">
+    <meta property="og:title" content="Peek the Arcade">
     <meta property="og:description" content="Browse and play games from platanus-hack-25-arcade forks">
-    <meta property="og:url" content="https://v4rgas.github.io/peep-the-arcade/">
+    <meta property="og:url" content="https://v4rgas.github.io/peek-the-arcade/">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Peep the Arcade">
+    <meta name="twitter:title" content="Peek the Arcade">
     <meta name="twitter:description" content="Browse and play games from platanus-hack-25-arcade forks">
 
     <!-- Favicon -->
@@ -24,8 +24,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Peep the Arcade</h1>
+        <h1>Peek the Arcade</h1>
         <p class="subtitle">Test games from platanus-hack-25-arcade forks</p>
+
+        <div class="token-input" id="token-section">
+            <p class="token-message">Rate limited? Add a GitHub token:</p>
+            <input type="password" id="github-token" placeholder="ghp_xxxxx (optional)">
+            <button id="save-token" class="btn-save">Save</button>
+        </div>
 
         <div id="loading" class="loading">Loading forks...</div>
         <div id="error" class="error" style="display: none;"></div>
@@ -37,7 +43,7 @@
                 <h2 id="current-game-title"></h2>
                 <button id="close-game" class="btn-close">× Close</button>
             </div>
-            <iframe id="game-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+            <iframe id="game-iframe" sandbox="allow-scripts"></iframe>
         </div>
     </div>
 
