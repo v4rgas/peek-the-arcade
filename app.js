@@ -200,8 +200,8 @@ function createForkCard(fork) {
             </div>
         </div>
         <div class="fork-meta">
-            <span class="meta-item" title="${fork.stargazers_count} stars">⭐ ${fork.stargazers_count}</span>
             <span class="meta-item" title="Last pushed ${timeAgo}">🕒 ${timeAgo}</span>
+            <span class="meta-item" title="${fork.stargazers_count} stars">⭐ ${fork.stargazers_count}</span>
         </div>
         <button class="btn-play" data-owner="${fork.owner.login}" data-repo="${fork.name}">
             ▶ Play Game
