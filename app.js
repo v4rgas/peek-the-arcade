@@ -14,6 +14,8 @@ const gameContainerEl = document.getElementById('game-container');
 const gameIframeEl = document.getElementById('game-iframe');
 const currentGameTitleEl = document.getElementById('current-game-title');
 const closeGameBtn = document.getElementById('close-game');
+const shareUrlInput = document.getElementById('share-url');
+const copyUrlBtn = document.getElementById('copy-url');
 const tokenInput = document.getElementById('github-token');
 const saveTokenBtn = document.getElementById('save-token');
 const filterCheckbox = document.getElementById('filter-modified');
@@ -221,6 +223,14 @@ async function loadGame(owner, repo) {
     currentGameTitleEl.textContent = `${owner}'s Game`;
     gameContainerEl.style.display = 'block';
 
+    // Update URL with query parameter
+    const url = new URL(window.location);
+    url.searchParams.set('game', owner);
+    window.history.pushState({}, '', url);
+
+    // Display shareable URL
+    shareUrlInput.value = url.toString();
+
     try {
         let gameCode;
 
@@ -315,6 +325,10 @@ async function loadGame(owner, repo) {
 closeGameBtn.addEventListener('click', () => {
     gameContainerEl.style.display = 'none';
     gameIframeEl.srcdoc = '';
+    // Remove query parameter from URL
+    const url = new URL(window.location);
+    url.searchParams.delete('game');
+    window.history.pushState({}, '', url);
 });
 
 
@@ -343,6 +357,17 @@ async function init() {
         // Display with filter applied (checkbox is checked by default)
         const filtered = filterForks(allForks, filterCheckbox.checked);
         displayForks(filtered);
+
+        // Check if there's a game query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameOwner = urlParams.get('game');
+        if (gameOwner) {
+            // Find the fork for this owner
+            const fork = allForks.find(f => f.owner.login.toLowerCase() === gameOwner.toLowerCase());
+            if (fork) {
+                loadGame(fork.owner.login, fork.name);
+            }
+        }
 
     } catch (error) {
         loadingEl.style.display = 'none';

@@ -52,7 +52,10 @@
 
         <div id="game-container" class="game-container" style="display: none;">
             <div class="game-header">
-                <h2 id="current-game-title"></h2>
+                <div class="game-title-section">
+                    <h2 id="current-game-title"></h2>
+                    <input type="text" id="share-url" class="share-url" readonly>
+                </div>
                 <button id="close-game" class="btn-close">× Close</button>
             </div>
             <iframe id="game-iframe" sandbox="allow-scripts"></iframe>
