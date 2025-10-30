@@ -92,6 +92,34 @@ h1 {
     color: #fff;
 }
 
+.filter-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.filter-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #00ffff;
+    font-size: 0.6em;
+    cursor: pointer;
+    text-shadow: 0 0 5px #00ffff;
+    transition: all 0.3s;
+}
+
+.filter-checkbox:hover {
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+.filter-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #ff00ff;
+}
+
 .loading, .error {
     text-align: center;
     color: #00ffff;

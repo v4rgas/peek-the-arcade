@@ -1,6 +1,8 @@
 const REPO_OWNER = 'platanus-hack';
 const REPO_NAME = 'platanus-hack-25-arcade';
 const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/forks`;
+// Last commit date from parent repo: 2025-10-28T14:51:05Z
+const PARENT_LAST_PUSH = new Date('2025-10-28T14:51:05Z');
 
 // DOM elements
 const loadingEl = document.getElementById('loading');
@@ -12,6 +14,7 @@ const currentGameTitleEl = document.getElementById('current-game-title');
 const closeGameBtn = document.getElementById('close-game');
 const tokenInput = document.getElementById('github-token');
 const saveTokenBtn = document.getElementById('save-token');
+const filterCheckbox = document.getElementById('filter-modified');
 
 // Get stored token
 let githubToken = localStorage.getItem('github_token');
@@ -33,7 +36,10 @@ saveTokenBtn.addEventListener('click', () => {
     }
 });
 
-// Fetch forks from GitHub REST API (single request)
+// Store all forks globally
+let allForks = [];
+
+// Fetch forks from GitHub REST API
 async function fetchForks() {
     try {
         const headers = {};
@@ -50,6 +56,34 @@ async function fetchForks() {
     } catch (error) {
         throw new Error(`Failed to fetch forks: ${error.message}`);
     }
+}
+
+// Filter forks based on pushed_at date
+function filterForks(forks, onlyModified) {
+    if (!onlyModified) {
+        return forks;
+    }
+    return forks.filter(fork => {
+        const forkPushDate = new Date(fork.pushed_at);
+        return forkPushDate > PARENT_LAST_PUSH;
+    });
+}
+
+// Display forks
+function displayForks(forks) {
+    forksListEl.innerHTML = '';
+
+    if (forks.length === 0) {
+        errorEl.textContent = 'No forks found with the current filter!';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    errorEl.style.display = 'none';
+    forks.forEach(fork => {
+        const card = createForkCard(fork);
+        forksListEl.appendChild(card);
+    });
 }
 
 // Create fork card HTML
@@ -154,26 +188,31 @@ closeGameBtn.addEventListener('click', () => {
 });
 
 
+// Handle filter checkbox change
+filterCheckbox.addEventListener('change', () => {
+    const filtered = filterForks(allForks, filterCheckbox.checked);
+    displayForks(filtered);
+});
+
 // Initialize app
 async function init() {
     try {
         loadingEl.style.display = 'block';
         errorEl.style.display = 'none';
 
-        const forks = await fetchForks();
+        allForks = await fetchForks();
 
         loadingEl.style.display = 'none';
 
-        if (forks.length === 0) {
+        if (allForks.length === 0) {
             errorEl.textContent = 'No forks found yet!';
             errorEl.style.display = 'block';
             return;
         }
 
-        forks.forEach(fork => {
-            const card = createForkCard(fork);
-            forksListEl.appendChild(card);
-        });
+        // Display with filter applied (checkbox is checked by default)
+        const filtered = filterForks(allForks, filterCheckbox.checked);
+        displayForks(filtered);
 
     } catch (error) {
         loadingEl.style.display = 'none';
