@@ -53,13 +53,59 @@ h1 {
     text-shadow: 0 0 10px #00ffff;
 }
 
+.settings-container {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.settings-toggle {
+    padding: 10px 20px;
+    background: rgba(255, 255, 0, 0.1);
+    color: #ffff00;
+    border: 2px solid rgba(255, 255, 0, 0.3);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6em;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+    margin-bottom: 15px;
+}
+
+.settings-toggle:hover {
+    background: rgba(255, 255, 0, 0.2);
+    border-color: rgba(255, 255, 0, 0.6);
+    transform: scale(1.05);
+}
+
+.settings-panel {
+    background: rgba(26, 26, 46, 0.8);
+    border: 2px solid rgba(255, 255, 0, 0.3);
+    padding: 20px;
+    margin: 0 auto 20px;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.2);
+}
+
 .token-input {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .token-message {
     color: #ffff00;
+    font-size: 0.6em;
+    margin-bottom: 10px;
+}
+
+.refresh-section {
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.refresh-message {
+    color: #00ffff;
     font-size: 0.6em;
     margin-bottom: 10px;
 }
@@ -95,6 +141,11 @@ h1 {
 .filter-section {
     text-align: center;
     margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .filter-checkbox {
@@ -118,6 +169,70 @@ h1 {
     height: 20px;
     cursor: pointer;
     accent-color: #ff00ff;
+}
+
+.search-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.search-input {
+    padding: 12px 20px;
+    width: 100%;
+    max-width: 500px;
+    background: #1a1a2e;
+    border: 2px solid #ff00ff;
+    color: #ff00ff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6em;
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+    transition: all 0.3s;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 0, 255, 0.5);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #00ffff;
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+}
+
+.btn-refresh {
+    padding: 10px 20px;
+    background: #1a1a2e;
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6em;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.btn-refresh:hover {
+    background: #00ffff;
+    border-color: #ff00ff;
+    color: #0f0f23;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.fork-count-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 12px 20px;
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    color: #00ffff;
+    font-size: 0.6em;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    border-radius: 4px;
+    grid-column: 1 / -1;
 }
 
 .loading, .error {

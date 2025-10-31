@@ -19,12 +19,25 @@ const copyUrlBtn = document.getElementById('copy-url');
 const tokenInput = document.getElementById('github-token');
 const saveTokenBtn = document.getElementById('save-token');
 const filterCheckbox = document.getElementById('filter-modified');
+const refreshCacheBtn = document.getElementById('refresh-cache');
+const settingsToggleBtn = document.getElementById('settings-toggle');
+const settingsPanelEl = document.getElementById('settings-panel');
+const searchInput = document.getElementById('search-input');
 
 // Get stored token
 let githubToken = localStorage.getItem('github_token');
 if (githubToken) {
     tokenInput.value = githubToken;
 }
+
+// Toggle settings panel
+settingsToggleBtn.addEventListener('click', () => {
+    if (settingsPanelEl.style.display === 'none') {
+        settingsPanelEl.style.display = 'block';
+    } else {
+        settingsPanelEl.style.display = 'none';
+    }
+});
 
 // Save token
 saveTokenBtn.addEventListener('click', () => {
@@ -105,21 +118,58 @@ async function fetchForks() {
         }
 
         console.log('Fetching fresh forks data from GitHub API');
-        const headers = {};
+        const headers = {
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28'
+        };
         if (githubToken) {
             headers['Authorization'] = `token ${githubToken}`;
         }
 
-        const response = await fetch(`${API_URL}?per_page=100`, { headers });
-        if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
+        // Fetch all pages of forks using Link header pagination
+        const allForks = [];
+        let url = `${API_URL}?per_page=100`;
+        let pageNum = 1;
+
+        while (url) {
+            console.log(`Fetching page ${pageNum}...`);
+            const response = await fetch(url, { headers });
+
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.status}`);
+            }
+
+            const forks = await response.json();
+            console.log(`  Received ${forks.length} forks on page ${pageNum}`);
+
+            // Add all forks from this page
+            allForks.push(...forks);
+
+            // Parse Link header to get next page URL
+            const linkHeader = response.headers.get('link');
+            url = null; // Reset URL
+
+            if (linkHeader) {
+                // Extract the "next" link from the Link header
+                // Link header format: <url>; rel="next", <url>; rel="last", etc.
+                const nextMatch = linkHeader.match(/<([^>]+)>;\s*rel="next"/);
+                if (nextMatch) {
+                    url = nextMatch[1];
+                    pageNum++;
+                } else {
+                    console.log(`  Last page reached (no "next" link in header)`);
+                }
+            } else {
+                console.log(`  Last page reached (no Link header)`);
+            }
         }
-        const forks = await response.json();
+
+        console.log(`✓ Fetched ${allForks.length} total forks across ${pageNum} page(s)`);
 
         // Cache the results
-        cacheForks(forks);
+        cacheForks(allForks);
 
-        return forks;
+        return allForks;
     } catch (error) {
         throw new Error(`Failed to fetch forks: ${error.message}`);
     }
@@ -148,6 +198,32 @@ function filterForks(forks, onlyModified) {
     });
 }
 
+// Search filter (case-insensitive, by username only)
+function searchForks(forks, searchTerm) {
+    if (!searchTerm || searchTerm.trim() === '') {
+        return forks;
+    }
+
+    const term = searchTerm.toLowerCase();
+    return forks.filter(fork => {
+        const username = fork.owner.login.toLowerCase();
+        return username.includes(term);
+    });
+}
+
+// Apply all filters
+function applyFilters() {
+    let filtered = allForks;
+
+    // Apply modified filter
+    filtered = filterForks(filtered, filterCheckbox.checked);
+
+    // Apply search filter
+    filtered = searchForks(filtered, searchInput.value);
+
+    displayForks(filtered);
+}
+
 // Display forks
 function displayForks(forks) {
     forksListEl.innerHTML = '';
@@ -159,6 +235,12 @@ function displayForks(forks) {
     }
 
     errorEl.style.display = 'none';
+
+    // Show count of displayed vs total forks
+    const countInfo = document.createElement('div');
+    countInfo.className = 'fork-count-info';
+    countInfo.textContent = `Showing ${forks.length} of ${allForks.length} total forks`;
+    forksListEl.appendChild(countInfo);
 
     // Sort forks by pushed_at date (most recent first)
     const sortedForks = [...forks].sort((a, b) => {
@@ -334,8 +416,23 @@ closeGameBtn.addEventListener('click', () => {
 
 // Handle filter checkbox change
 filterCheckbox.addEventListener('change', () => {
-    const filtered = filterForks(allForks, filterCheckbox.checked);
-    displayForks(filtered);
+    applyFilters();
+});
+
+// Handle search input
+searchInput.addEventListener('input', () => {
+    applyFilters();
+});
+
+// Handle refresh cache button
+refreshCacheBtn.addEventListener('click', async () => {
+    // Clear the cache
+    localStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(CACHE_TIMESTAMP_KEY);
+    console.log('Cache cleared, fetching fresh data...');
+
+    // Reload the page to fetch fresh data
+    window.location.reload();
 });
 
 // Initialize app
@@ -354,9 +451,8 @@ async function init() {
             return;
         }
 
-        // Display with filter applied (checkbox is checked by default)
-        const filtered = filterForks(allForks, filterCheckbox.checked);
-        displayForks(filtered);
+        // Display with filters applied
+        applyFilters();
 
         // Check if there's a game query parameter
         const urlParams = new URLSearchParams(window.location.search);

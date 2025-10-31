@@ -20,18 +20,12 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>">
 
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
     <div class="container">
         <h1>Peek the Arcade</h1>
         <p class="subtitle">Test games from platanus-hack-25-arcade forks</p>
-
-        <div class="token-input" id="token-section">
-            <p class="token-message">Rate limited? Add a GitHub token:</p>
-            <input type="password" id="github-token" placeholder="ghp_xxxxx (optional)">
-            <button id="save-token" class="btn-save">Save</button>
-        </div>
 
         <div class="filter-section">
             <label class="filter-checkbox">
@@ -40,10 +34,29 @@
             </label>
         </div>
 
+        <div class="search-section">
+            <input type="text" id="search-input" placeholder="Search by username..." class="search-input">
+        </div>
+
         <div id="loading" class="loading">Loading forks...</div>
         <div id="error" class="error" style="display: none;"></div>
 
         <div id="forks-list" class="forks-list"></div>
+
+        <div class="settings-container">
+            <button id="settings-toggle" class="settings-toggle">⚙️ Settings for nerds</button>
+            <div id="settings-panel" class="settings-panel" style="display: none;">
+                <div class="token-input">
+                    <p class="token-message">GitHub Token (for higher rate limits):</p>
+                    <input type="password" id="github-token" placeholder="ghp_xxxxx (optional)">
+                    <button id="save-token" class="btn-save">Save Token</button>
+                </div>
+                <div class="refresh-section">
+                    <p class="refresh-message">Clear cache and reload data:</p>
+                    <button id="refresh-cache" class="btn-refresh">Force Refresh</button>
+                </div>
+            </div>
+        </div>
 
         <footer class="footer">
             <p class="made-with-love">Made with ❤️ by <a href="https://github.com/v4rgas" target="_blank">v4rgas</a></p>
@@ -62,6 +75,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=2"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>
