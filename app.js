@@ -1,10 +1,40 @@
-const REPO_OWNER = 'platanus-hack';
-const REPO_NAME = 'platanus-hack-25-arcade';
-const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/forks`;
-// Last commit date from parent repo: 2025-10-28T14:51:05Z
-const PARENT_LAST_PUSH = new Date('2025-10-28T14:51:05Z');
+const HACKATHONS = {
+    'arg-26': {
+        label: '2026 Argentina',
+        owner: 'platanus-hack',
+        repo: 'platanus-hack-26-argentina-arcade',
+        parentLastPush: '2026-04-14T19:28:51Z',
+        subtitle: 'Test games from platanus-hack-26-argentina-arcade forks',
+    },
+    'chi-25': {
+        label: '2025 Chile',
+        owner: 'platanus-hack',
+        repo: 'platanus-hack-25-arcade',
+        parentLastPush: '2025-10-28T14:51:05Z',
+        subtitle: 'Test games from platanus-hack-25-arcade forks',
+    },
+};
+const DEFAULT_HACKATHON = 'arg-26';
+
+// Pick hackathon from URL or localStorage, fallback to default
+function getInitialHackathon() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromUrl = urlParams.get('hackathon');
+    if (fromUrl && HACKATHONS[fromUrl]) return fromUrl;
+    const stored = localStorage.getItem('active_hackathon');
+    if (stored && HACKATHONS[stored]) return stored;
+    return DEFAULT_HACKATHON;
+}
+
+let activeHackathonKey = getInitialHackathon();
+let activeHackathon = HACKATHONS[activeHackathonKey];
+let PARENT_LAST_PUSH = new Date(activeHackathon.parentLastPush);
 // Minimum time difference (1 minute) to consider a fork as having new commits
 const MIN_TIME_DIFFERENCE_MS = 60 * 1000; // 1 minute in milliseconds
+
+function getApiUrl() {
+    return `https://api.github.com/repos/${activeHackathon.owner}/${activeHackathon.repo}/forks`;
+}
 
 // DOM elements
 const loadingEl = document.getElementById('loading');
@@ -23,6 +53,8 @@ const refreshCacheBtn = document.getElementById('refresh-cache');
 const settingsToggleBtn = document.getElementById('settings-toggle');
 const settingsPanelEl = document.getElementById('settings-panel');
 const searchInput = document.getElementById('search-input');
+const hackathonSelectEl = document.getElementById('hackathon-select');
+const subtitleEl = document.getElementById('subtitle');
 
 // Get stored token
 let githubToken = localStorage.getItem('github_token');
@@ -57,15 +89,20 @@ saveTokenBtn.addEventListener('click', () => {
 let allForks = [];
 
 // Cache configuration
-const CACHE_KEY = 'forks_cache';
-const CACHE_TIMESTAMP_KEY = 'forks_cache_timestamp';
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
 const GAME_CACHE_PREFIX = 'game_cache_'; // Prefix for game.js cache keys
 const GAME_CACHE_TIMESTAMP_PREFIX = 'game_cache_timestamp_';
 
+function getForksCacheKey() {
+    return `forks_cache__${activeHackathonKey}`;
+}
+function getForksCacheTimestampKey() {
+    return `forks_cache_timestamp__${activeHackathonKey}`;
+}
+
 // Check if cache is valid
 function isCacheValid() {
-    const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+    const timestamp = localStorage.getItem(getForksCacheTimestampKey());
     if (!timestamp) return false;
 
     const cacheAge = Date.now() - parseInt(timestamp, 10);
@@ -74,14 +111,14 @@ function isCacheValid() {
 
 // Get forks from cache
 function getCachedForks() {
-    const cached = localStorage.getItem(CACHE_KEY);
+    const cached = localStorage.getItem(getForksCacheKey());
     return cached ? JSON.parse(cached) : null;
 }
 
 // Save forks to cache
 function cacheForks(forks) {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(forks));
-    localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+    localStorage.setItem(getForksCacheKey(), JSON.stringify(forks));
+    localStorage.setItem(getForksCacheTimestampKey(), Date.now().toString());
 }
 
 // Check if game cache is valid
@@ -128,7 +165,7 @@ async function fetchForks() {
 
         // Fetch all pages of forks using Link header pagination
         const allForks = [];
-        let url = `${API_URL}?per_page=100`;
+        let url = `${getApiUrl()}?per_page=100`;
         let pageNum = 1;
 
         while (url) {
@@ -308,6 +345,7 @@ async function loadGame(owner, repo) {
     // Update URL with query parameter
     const url = new URL(window.location);
     url.searchParams.set('game', owner);
+    url.searchParams.set('hackathon', activeHackathonKey);
     window.history.pushState({}, '', url);
 
     // Display shareable URL
@@ -426,18 +464,43 @@ searchInput.addEventListener('input', () => {
 
 // Handle refresh cache button
 refreshCacheBtn.addEventListener('click', async () => {
-    // Clear the cache
-    localStorage.removeItem(CACHE_KEY);
-    localStorage.removeItem(CACHE_TIMESTAMP_KEY);
+    // Clear the cache for the active hackathon
+    localStorage.removeItem(getForksCacheKey());
+    localStorage.removeItem(getForksCacheTimestampKey());
     console.log('Cache cleared, fetching fresh data...');
 
     // Reload the page to fetch fresh data
     window.location.reload();
 });
 
+// Populate hackathon selector and handle changes
+function initHackathonSelector() {
+    hackathonSelectEl.innerHTML = '';
+    Object.entries(HACKATHONS).forEach(([key, cfg]) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = cfg.label;
+        if (key === activeHackathonKey) opt.selected = true;
+        hackathonSelectEl.appendChild(opt);
+    });
+    subtitleEl.textContent = activeHackathon.subtitle;
+
+    hackathonSelectEl.addEventListener('change', () => {
+        const key = hackathonSelectEl.value;
+        if (!HACKATHONS[key]) return;
+        localStorage.setItem('active_hackathon', key);
+        const url = new URL(window.location);
+        url.searchParams.set('hackathon', key);
+        url.searchParams.delete('game');
+        window.location.href = url.toString();
+    });
+}
+
 // Initialize app
 async function init() {
     try {
+        initHackathonSelector();
+
         loadingEl.style.display = 'block';
         errorEl.style.display = 'none';
 

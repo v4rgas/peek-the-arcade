@@ -4,28 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peek the Arcade</title>
-    <meta name="description" content="Browse and play games from platanus-hack-25-arcade forks">
+    <meta name="description" content="Browse and play games from Platanus Hack arcade forks">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Peek the Arcade">
-    <meta property="og:description" content="Browse and play games from platanus-hack-25-arcade forks">
+    <meta property="og:description" content="Browse and play games from Platanus Hack arcade forks">
     <meta property="og:url" content="https://v4rgas.github.io/peek-the-arcade/">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Peek the Arcade">
-    <meta name="twitter:description" content="Browse and play games from platanus-hack-25-arcade forks">
+    <meta name="twitter:description" content="Browse and play games from Platanus Hack arcade forks">
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>">
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
     <div class="container">
         <h1>Peek the Arcade</h1>
-        <p class="subtitle">Test games from platanus-hack-25-arcade forks</p>
+        <p class="subtitle" id="subtitle">Test games from platanus-hack forks</p>
+
+        <div class="hackathon-section">
+            <label for="hackathon-select" class="hackathon-label">Hackathon:</label>
+            <select id="hackathon-select" class="hackathon-select"></select>
+        </div>
 
         <div class="filter-section">
             <label class="filter-checkbox">
@@ -75,6 +80,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>

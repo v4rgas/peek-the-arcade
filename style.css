@@ -138,6 +138,48 @@ h1 {
     color: #fff;
 }
 
+.hackathon-section {
+    text-align: center;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.hackathon-label {
+    color: #ffff00;
+    font-size: 0.65em;
+    text-shadow: 0 0 8px rgba(255, 255, 0, 0.6);
+}
+
+.hackathon-select {
+    padding: 10px 16px;
+    background: #1a1a2e;
+    border: 2px solid #ffff00;
+    color: #ffff00;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6em;
+    cursor: pointer;
+    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+    transition: all 0.3s;
+    outline: none;
+}
+
+.hackathon-select:hover,
+.hackathon-select:focus {
+    border-color: #ff00ff;
+    color: #ff00ff;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+}
+
+.hackathon-select option {
+    background: #1a1a2e;
+    color: #ffff00;
+}
+
 .filter-section {
     text-align: center;
     margin-bottom: 30px;
